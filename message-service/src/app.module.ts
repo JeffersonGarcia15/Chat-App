@@ -6,6 +6,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { MessagesModule } from "./messages/services/messages/messages.module";
 import { environments } from "./environments";
+import config from "./config";
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { environments } from "./environments";
     ConfigModule.forRoot({
       envFilePath: environments[process.env.NODE_ENV] || ".env",
       isGlobal: true,
+      load: [config],
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid("dev", "prod", "stag").default("dev"),
         PORT: Joi.number().default(5432),
