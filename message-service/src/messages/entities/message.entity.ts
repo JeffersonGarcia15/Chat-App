@@ -4,12 +4,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Group } from "./group.entity";
-import { Media } from "./media.entity";
 
 @Entity()
 export class Message {
@@ -54,12 +52,4 @@ export class Message {
   @ManyToOne(() => Group, (group) => group.Messages)
   @JoinColumn({ name: "GroupId" })
   Group: Group;
-
-  // A Media is associated with a message
-  @OneToOne(() => Media, (media) => media.Message, {
-    nullable: true,
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "MediaId" })
-  Media: Media;
 }
