@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Group } from "./group.entity";
 
 @Entity()
 export class GroupMember {
@@ -18,16 +21,22 @@ export class GroupMember {
   UserId: number;
 
   @CreateDateColumn({
-    name: "created_at",
+    name: "CreatedAt",
     type: "timestamptz",
     default: () => "CURRENT_TIMESTAMP",
   })
   CreatedAt: Date;
 
   @UpdateDateColumn({
-    name: "updated_at",
+    name: "UpdatedAt",
     type: "timestamptz",
     default: () => "CURRENT_TIMESTAMP",
   })
   UpdatedAt: Date;
+
+  // A Group can have many members
+  // A User can be part of many groups
+  @ManyToOne(() => Group, (group) => group.Members)
+  @JoinColumn({ name: "GroupId" })
+  Group: Group;
 }
