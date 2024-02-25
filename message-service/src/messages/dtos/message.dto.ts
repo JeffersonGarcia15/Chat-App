@@ -44,6 +44,13 @@ export class CreateMessageDto {
   @IsNotEmpty()
   @ApiProperty({ description: "The type of the message" })
   Type: MessageType;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    type: "file",
+  })
+  File: string;
 }
 
 export class UpdateMessageDto extends PartialType(CreateMessageDto) {}

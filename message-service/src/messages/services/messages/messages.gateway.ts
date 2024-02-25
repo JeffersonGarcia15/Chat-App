@@ -1,4 +1,4 @@
-import { Inject } from "@nestjs/common";
+import { Inject, Logger } from "@nestjs/common";
 import { ClientKafka } from "@nestjs/microservices";
 import {
   ConnectedSocket,
@@ -18,10 +18,20 @@ export class MessagesGateway {
   @WebSocketServer()
   server: Server;
 
+  private logger = new Logger("MessagesGateway");
+
   constructor(@Inject("KAFKA_SERVICE") private clientKafka: ClientKafka) {}
+
+  async onModuleInit() {
+    // Making sure the client is connected to Kafka before starting the server
+    await this.clientKafka.connect();
+    this.logger.log("Kafka client connected");
+  }
 
   @SubscribeMessage("message")
   sendMessage(@MessageBody() data: CreateMessageDto) {
+    this.clientKafka.emit("FileToProcess", JSON.stringify({ File: data.File }));
+
     this.server.to(String(data.GroupId)).emit("message", data);
   }
 

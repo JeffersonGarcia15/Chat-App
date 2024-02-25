@@ -7,7 +7,6 @@ import { AppService } from "./app.service";
 import { MessagesModule } from "./messages/services/messages/messages.module";
 import { environments } from "./environments";
 import config from "./config";
-import { ClientsModule, Transport } from "@nestjs/microservices";
 
 @Module({
   imports: [
@@ -26,20 +25,6 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
         DATABASE_NAME: Joi.string().required(),
       }),
     }),
-    ClientsModule.register([
-      {
-        name: "KAFKA_SERVICE",
-        transport: Transport.KAFKA,
-        options: {
-          client: {
-            brokers: ["kafka:9092"],
-          },
-          consumer: {
-            groupId: "message-service-group",
-          },
-        },
-      },
-    ]),
   ],
   controllers: [AppController],
   providers: [AppService],
