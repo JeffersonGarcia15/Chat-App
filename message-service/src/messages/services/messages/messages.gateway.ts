@@ -1,3 +1,5 @@
+import { Inject } from "@nestjs/common";
+import { ClientKafka } from "@nestjs/microservices";
 import {
   ConnectedSocket,
   MessageBody,
@@ -15,6 +17,8 @@ import { CreateMessageDto } from "src/messages/dtos/message.dto";
 export class MessagesGateway {
   @WebSocketServer()
   server: Server;
+
+  constructor(@Inject("KAFKA_SERVICE") private clientKafka: ClientKafka) {}
 
   @SubscribeMessage("message")
   sendMessage(@MessageBody() data: CreateMessageDto) {
