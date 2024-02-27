@@ -4,6 +4,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Client } from "pg";
 
 import config from "src/config";
+import { Group } from "src/messages/entities/group.entity";
+import { GroupMember } from "src/messages/entities/groupMember.entity";
+import { Message } from "src/messages/entities/message.entity";
 
 @Global()
 @Module({
@@ -21,7 +24,7 @@ import config from "src/config";
           database: name,
           autoLoadEntities: true,
           synchronize: false, // DO NOT USE IN PRODUCTION
-          entities: [],
+          entities: [Message, Group, GroupMember],
         };
       },
     }),

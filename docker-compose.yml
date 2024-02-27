@@ -1,10 +1,12 @@
 # CREDITS TO: https://www.youtube.com/watch?v=HX9RsIQktuQ
-version: '3.8'
+version: "3.8"
 services:
   message-service:
     build: ./message-service
     ports:
       - "3000:3000"
+    networks:
+      - my_custom_network
 
   kafka:
     image: bitnami/kafka:latest
@@ -16,8 +18,10 @@ services:
       ALLOW_PLAINTEXT_LISTENER: "yes"
     ports:
       - "9092:9092"
-    depends_on: 
+    depends_on:
       - zookeeper
+    networks:
+      - my_custom_network
 
   zookeeper:
     image: bitnami/zookeeper:latest
@@ -25,6 +29,8 @@ services:
       ALLOW_ANONYMOUS_LOGIN: "yes"
     ports:
       - "2181:2181"
+    networks:
+      - my_custom_network
 
   akhq:
     image: tchiotludo/akhq
@@ -35,7 +41,13 @@ services:
             docker-kafka-server:
               properties:
                 bootstrap.servers: "kafka:9092"
+    networks:
+      - my_custom_network
     ports:
       - "8080:8080"
     depends_on:
       - kafka
+  
+networks:
+  my_custom_network:
+    external: true
