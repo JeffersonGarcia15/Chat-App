@@ -9,6 +9,11 @@ import {
 import { Message } from "./message.entity";
 import { GroupMember } from "./groupMember.entity";
 
+enum GroupType {
+  Group = "group",
+  Dm = "dm",
+} // could be expanded for private/public groups
+
 @Entity()
 export class Group {
   @PrimaryGeneratedColumn()
@@ -19,6 +24,9 @@ export class Group {
 
   @Column({ type: "varchar", length: 200, nullable: true })
   Description: string;
+
+  @Column({ type: "enum", enum: GroupType, default: GroupType.Dm })
+  Type: string;
 
   @CreateDateColumn({
     name: "CreatedAt",

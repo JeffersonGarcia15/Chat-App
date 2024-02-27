@@ -26,7 +26,7 @@ export class Message {
   @Column({ type: "int", nullable: true })
   GroupId: number;
 
-  @Column({ type: "enum", enum: ["edited", "deleted"] })
+  @Column({ type: "enum", enum: ["edited", "deleted"], nullable: true })
   Status: string;
 
   @Column({ type: "enum", enum: ["text", "image", "video", "audio", "file"] })
@@ -45,6 +45,15 @@ export class Message {
     default: () => "CURRENT_TIMESTAMP",
   })
   UpdatedAt: Date;
+
+  @Column({ type: "date", nullable: true })
+  SentAt: Date;
+
+  @Column({ type: "date", nullable: true })
+  DeliveredAt: Date;
+
+  @Column({ type: "date", nullable: true })
+  ReadAt: Date;
 
   // A Group can have many messages
   // A User can have many messages(Users not part of this repo tho)
