@@ -1,7 +1,9 @@
 import { NestFactory, Reflector } from "@nestjs/core";
-import { AppModule } from "./app.module";
 import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { Transport, MicroserviceOptions } from "@nestjs/microservices";
+
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +18,19 @@ async function bootstrap() {
     }),
   );
 
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: ["kafka:9092"],
+      },
+      consumer: {
+        groupId: "message-service-group",
+      },
+    },
+  });
+
+  await app.startAllMicroservices();
   const config = new DocumentBuilder()
     .setTitle("Chat App API")
     .setDescription("Chat App API")
@@ -27,5 +42,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   await app.listen(process.env.PORT || 3000);
+
+  console.log("Message service is running on port 3000");
 }
 bootstrap();
