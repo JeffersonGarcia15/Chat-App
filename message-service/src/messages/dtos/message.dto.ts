@@ -55,7 +55,7 @@ export class CreateMessageDto {
   @ApiProperty({
     type: "file",
   })
-  File: string;
+  File?: string;
 
   @IsDateString()
   @IsOptional()
