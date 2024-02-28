@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber } from "class-validator";
 
 export class GroupMemberDto {
@@ -12,3 +12,5 @@ export class GroupMemberDto {
   @ApiProperty({ description: "The ID of the user" })
   UserId: number;
 }
+
+export class UpdateGroupMemberDto extends PartialType(GroupMemberDto) {}

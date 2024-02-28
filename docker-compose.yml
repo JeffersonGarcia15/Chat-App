@@ -3,6 +3,8 @@ version: "3.8"
 services:
   message-service:
     build: ./message-service
+    env_file:
+      - ./message-service/.env
     ports:
       - "3000:3000"
     networks:
