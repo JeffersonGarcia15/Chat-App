@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.8"
 
 services:
   postgres:
@@ -11,6 +11,8 @@ services:
       - "5433:5432"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - my_custom_network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -23,3 +25,21 @@ services:
       - ./pgadmin_data:/var/lib/pgadmin
     depends_on:
       - postgres
+    networks:
+      - my_custom_network
+
+  # app:
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   build:
+  #     .
+  #   image: jeffersongarcia1599/typeorm-migrations:0.0.1
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - my_custom_network
+
+networks:
+  my_custom_network:
+    external: true

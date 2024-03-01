@@ -1,0 +1,25 @@
+message-service
+ - dist
+ - node_modules
+ - pgadmin_data
+ - postgres_data
+ - src
+  *database
+    # migrations
+    # data-source.ts
+    # database.module.ts
+  * messages
+    # dtos
+    # entities
+    # events
+    # services
+      - message.service.ts
+    # message.module.ts
+  * shared
+    # shared.module.ts
+  * app.controller.ts
+  * app.module.ts
+  * main.ts
+  * config.ts
+  * environments.ts
+  * app.service.ts

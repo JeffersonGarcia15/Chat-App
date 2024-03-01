@@ -1,5 +1,10 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import {
+  IsDateString,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from "class-validator";
 
 enum MessageStatus {
   Edited = "edited",
@@ -36,9 +41,9 @@ export class CreateMessageDto {
   GroupId?: number; // Optional, assuming it can be null for direct messages (DMs)
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ description: "The status of the message" })
-  Status: MessageStatus;
+  Status?: MessageStatus;
 
   @IsString()
   @IsNotEmpty()
@@ -50,7 +55,37 @@ export class CreateMessageDto {
   @ApiProperty({
     type: "file",
   })
-  File: string;
+  File?: string;
+
+  @IsDateString()
+  @IsOptional()
+  @ApiProperty({
+    description: "The time the message was sent",
+    required: false,
+    type: "string",
+    format: "date-time",
+  })
+  SentAt?: Date;
+
+  @IsDateString()
+  @IsOptional()
+  @ApiProperty({
+    description: "The time the message was delivered",
+    required: false,
+    type: "string",
+    format: "date-time",
+  })
+  DeliveredAt?: Date;
+
+  @IsDateString()
+  @IsOptional()
+  @ApiProperty({
+    description: "The time the message was read",
+    required: false,
+    type: "string",
+    format: "date-time",
+  })
+  ReadAt?: Date;
 }
 
 export class UpdateMessageDto extends PartialType(CreateMessageDto) {}
