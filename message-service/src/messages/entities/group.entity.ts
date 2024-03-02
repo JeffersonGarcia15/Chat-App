@@ -19,11 +19,14 @@ export class Group {
   @PrimaryGeneratedColumn()
   Id: number;
 
-  @Column({ type: "varchar", length: 100 })
-  Name: string;
+  @Column({ type: "varchar", nullable: true })
+  Identifier: string;
+
+  @Column({ type: "varchar", length: 100, nullable: true })
+  Name?: string;
 
   @Column({ type: "varchar", length: 200, nullable: true })
-  Description: string;
+  Description?: string;
 
   @Column({ type: "enum", enum: GroupType, default: GroupType.Dm })
   Type: string;
