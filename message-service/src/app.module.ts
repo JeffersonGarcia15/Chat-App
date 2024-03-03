@@ -8,6 +8,7 @@ import { MessagesModule } from "./messages/messages.module";
 import { environments } from "./environments";
 import config from "./config";
 import { DatabaseModule } from "./database/database.module";
+import { GroupsService } from './messages/services/groups/groups.service';
 
 @Module({
   imports: [
@@ -29,6 +30,6 @@ import { DatabaseModule } from "./database/database.module";
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, GroupsService],
 })
 export class AppModule {}

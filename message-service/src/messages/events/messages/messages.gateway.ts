@@ -8,7 +8,9 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { JoinChatDto } from "src/messages/dtos/joinChat.dto";
 import { CreateMessageDto } from "src/messages/dtos/message.dto";
+import { GroupsService } from "src/messages/services/groups/groups.service";
 import { MessagesService } from "src/messages/services/messages/messages.service";
 @WebSocketGateway({
   cors: {
@@ -24,6 +26,7 @@ export class MessagesGateway {
   constructor(
     @Inject("KAFKA_SERVICE") private clientKafka: ClientKafka,
     private messagesService: MessagesService,
+    private groupService: GroupsService,
   ) {}
 
   async onModuleInit() {
@@ -45,11 +48,13 @@ export class MessagesGateway {
   }
 
   @SubscribeMessage("join")
-  joinGroup(
+  async joinGroup(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { GroupId: number },
+    @MessageBody() data: JoinChatDto,
   ) {
-    client.join(String(data.GroupId));
-    console.log(`User joined group ${String(data.GroupId)}`);
+    // Handle the room creation/retrieval and joining
+    const groupChat = await this.groupService.joinChat(data);
+    client.join(String(groupChat.Id));
+    console.log(`User joined group ${String(groupChat.Id)}`);
   }
 }
