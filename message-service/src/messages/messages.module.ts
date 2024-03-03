@@ -6,13 +6,14 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Message } from "./entities/message.entity";
 import { Group } from "./entities/group.entity";
 import { GroupMember } from "./entities/groupMember.entity";
+import { GroupsService } from "./services/groups/groups.service";
 
 @Module({
   imports: [
     SharedModule,
     TypeOrmModule.forFeature([Message, Group, GroupMember]),
   ],
-  providers: [MessagesGateway, MessagesService],
+  providers: [MessagesGateway, MessagesService, GroupsService],
   exports: [MessagesService, TypeOrmModule],
 })
 export class MessagesModule {}

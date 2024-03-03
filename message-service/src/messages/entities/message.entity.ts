@@ -29,7 +29,11 @@ export class Message {
   @Column({ type: "enum", enum: ["edited", "deleted"], nullable: true })
   Status: string;
 
-  @Column({ type: "enum", enum: ["text", "image", "video", "audio", "file"] })
+  @Column({
+    type: "enum",
+    enum: ["text", "image", "video", "audio", "file"],
+    default: "text",
+  })
   Type: string;
 
   @CreateDateColumn({

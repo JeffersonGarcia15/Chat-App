@@ -55,6 +55,21 @@ export class GroupsService {
       where: { UserId: SenderId, GroupId: groupChat.Id },
     });
 
+    // Check if the other user is a member of the group
+    if (ReceiverId) {
+      const isReceiverMember = await this.groupMemberRepository.findOne({
+        where: { UserId: ReceiverId, GroupId: groupChat.Id },
+      });
+
+      // If the receiver is not a member, add them
+      if (!isReceiverMember) {
+        await this.groupMemberRepository.save({
+          UserId: ReceiverId,
+          GroupId: groupChat.Id,
+        });
+      }
+    }
+
     // If the user is not a member, add them
     if (!isMember) {
       await this.groupMemberRepository.save({
