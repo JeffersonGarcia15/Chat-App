@@ -1,4 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { JoinChatDto } from "src/messages/dtos/joinChat.dto";
 import { Group } from "src/messages/entities/group.entity";
@@ -43,10 +47,10 @@ export class GroupsService {
       // If the group doesn't exist, throw an error
       // Keep in mind that a group chat is created BEFORE joining it, which is different from DMs
       if (!groupChat) {
-        throw new Error("Group not found");
+        throw new NotFoundException("Group not found");
       }
     } else {
-      throw new Error("Invalid join chat request");
+      throw new BadRequestException("Invalid join chat request");
     }
 
     // Check if a member is already a member of this group(make use of the groupMemberRepository)
