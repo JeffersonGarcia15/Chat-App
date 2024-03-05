@@ -9,6 +9,19 @@ import {
 } from "typeorm";
 import { Group } from "./group.entity";
 
+export enum MessageStatus {
+  Edited = "edited",
+  Deleted = "deleted",
+}
+
+export enum MessageType {
+  Text = "text",
+  Image = "image",
+  Video = "video",
+  Audio = "audio",
+  File = "file",
+}
+
 @Entity()
 export class Message {
   @PrimaryGeneratedColumn()
@@ -21,17 +34,14 @@ export class Message {
   SenderId: number;
 
   @Column({ type: "int", nullable: true })
-  ReceiverId: number;
-
-  @Column({ type: "int", nullable: true })
   GroupId: number;
 
-  @Column({ type: "enum", enum: ["edited", "deleted"], nullable: true })
+  @Column({ type: "enum", enum: MessageStatus, nullable: true })
   Status: string;
 
   @Column({
     type: "enum",
-    enum: ["text", "image", "video", "audio", "file"],
+    enum: MessageType,
     default: "text",
   })
   Type: string;
