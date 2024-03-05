@@ -8,7 +8,7 @@ import { MessagesModule } from "./messages/messages.module";
 import { environments } from "./environments";
 import config from "./config";
 import { DatabaseModule } from "./database/database.module";
-import { GroupsService } from './messages/services/groups/groups.service';
+import { GroupsService } from "./messages/services/groups/groups.service";
 
 @Module({
   imports: [

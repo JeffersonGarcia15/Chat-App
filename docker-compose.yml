@@ -4,7 +4,7 @@ services:
   message-service:
     build: ./message-service
     env_file:
-      - ./message-service/.env
+      - ./message-service/.env.prod
     ports:
       - "3000:3000"
     networks:

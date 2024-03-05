@@ -9,7 +9,10 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { JoinChatDto } from "src/messages/dtos/joinChat.dto";
-import { CreateMessageDto } from "src/messages/dtos/message.dto";
+import {
+  CreateMessageDto,
+  FilterMessagesDto,
+} from "src/messages/dtos/message.dto";
 import { GroupsService } from "src/messages/services/groups/groups.service";
 import { MessagesService } from "src/messages/services/messages/messages.service";
 @WebSocketGateway({
@@ -35,6 +38,15 @@ export class MessagesGateway {
     this.logger.log("Kafka client connected");
   }
 
+  // This is the event that the client will emit to get the initial messages
+  @SubscribeMessage("initialMessages")
+  async getInitialMessages(@MessageBody() data: FilterMessagesDto) {
+    // Get the initial messages from the database
+    const messages = await this.messagesService.findAll(data);
+
+    // Emit the messages to the WebSocket server
+    this.server.to(String(data.GroupId)).emit("initialMessages", messages);
+  }
   @SubscribeMessage("message")
   async sendMessage(@MessageBody() data: CreateMessageDto) {
     // Save the message to the database

@@ -2,22 +2,13 @@ import { ApiProperty, PartialType } from "@nestjs/swagger";
 import {
   IsDateString,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
+  Min,
 } from "class-validator";
-
-enum MessageStatus {
-  Edited = "edited",
-  Deleted = "deleted",
-}
-
-enum MessageType {
-  Text = "text",
-  Image = "image",
-  Video = "video",
-  Audio = "audio",
-  File = "file",
-}
+import { MessageStatus, MessageType } from "../entities/message.entity";
 
 export class CreateMessageDto {
   @IsString()
@@ -25,18 +16,18 @@ export class CreateMessageDto {
   @ApiProperty({ description: "The content of the message" })
   Content: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
   @ApiProperty({ description: "The ID of the sender" })
   SenderId: number;
 
-  @IsString()
-  @IsOptional()
+  @IsNumber()
+  @IsPositive()
   @ApiProperty({ description: "The ID of the receiver" })
   ReceiverId?: number; // Optional, assuming it can be null for group messages
 
-  @IsString()
-  @IsOptional()
+  @IsNumber()
+  @IsPositive()
   @ApiProperty({ description: "The ID of the group" })
   GroupId?: number; // Optional, assuming it can be null for direct messages (DMs)
 
@@ -89,3 +80,43 @@ export class CreateMessageDto {
 }
 
 export class UpdateMessageDto extends PartialType(CreateMessageDto) {}
+
+export class FilterMessagesDto {
+  @IsNumber()
+  @IsPositive()
+  @ApiProperty({
+    description: "The ID of the group",
+    required: false,
+  })
+  GroupId?: number;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: "The type of the message",
+    required: false,
+  })
+  Type?: MessageType;
+
+  @IsOptional()
+  @IsNumber({ allowNaN: false }, { message: "The limit must be a number" })
+  @IsPositive()
+  @ApiProperty({ description: "The limit of messages to return" })
+  Limit?: number;
+
+  @IsOptional()
+  @IsNumber({ allowNaN: false }, { message: "The offset must be a number" })
+  @Min(0)
+  @ApiProperty({ description: "The offset of messages to return" })
+  Offset?: number;
+
+  @IsDateString()
+  @IsOptional()
+  @ApiProperty({
+    description: "The time the message was delivered",
+    required: false,
+    type: "string",
+    format: "date-time",
+  })
+  DeliveredAt?: Date;
+}
