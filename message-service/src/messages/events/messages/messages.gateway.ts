@@ -20,6 +20,7 @@ import {
   CreateMessageDto,
   FilterMessagesDto,
 } from "src/messages/dtos/message.dto";
+import { Message } from "src/messages/entities/message.entity";
 import { GroupsService } from "src/messages/services/groups/groups.service";
 import { MessagesService } from "src/messages/services/messages/messages.service";
 @WebSocketGateway({
@@ -62,7 +63,10 @@ export class MessagesGateway {
     const savedMessage = await this.messagesService.createMessage(data);
 
     // Emit the message to the Kafka broker
-    this.clientKafka.emit("FileToProcess", JSON.stringify({ File: data.File }));
+    this.clientKafka.emit(
+      "FileToProcess",
+      JSON.stringify({ Id: savedMessage.Id, File: data.File }),
+    );
 
     // Emit the message to the WebSocket server. We don't send just data because this one doesn't have an id.
     this.server.to(String(data.GroupId)).emit("message", savedMessage);
@@ -77,5 +81,9 @@ export class MessagesGateway {
     const groupChat = await this.groupService.joinChat(data);
     client.join(String(groupChat.Id));
     console.log(`User joined group ${String(groupChat.Id)}`);
+  }
+
+  async sendFileMessage(message: Message) {
+    this.server.to(String(message.GroupId)).emit("message", message);
   }
 }

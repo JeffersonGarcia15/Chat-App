@@ -7,12 +7,14 @@ import { Message } from "./entities/message.entity";
 import { Group } from "./entities/group.entity";
 import { GroupMember } from "./entities/groupMember.entity";
 import { GroupsService } from "./services/groups/groups.service";
+import { MessagesController } from "./controllers/messages/messages.controller";
 
 @Module({
   imports: [
     SharedModule,
     TypeOrmModule.forFeature([Message, Group, GroupMember]),
   ],
+  controllers: [MessagesController],
   providers: [MessagesGateway, MessagesService, GroupsService],
   exports: [MessagesService, TypeOrmModule],
 })
