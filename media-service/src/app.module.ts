@@ -3,8 +3,9 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { ConfigModule } from "@nestjs/config";
-import { MediaController } from "./controllers/media/media.controller";
-import { MediaService } from "./services/media/media.service";
+import { MediaController } from "./media/controllers/media/media.controller";
+import { MediaService } from "./media/services/media/media.service";
+import { MediaModule } from "./media/media.module";
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { MediaService } from "./services/media/media.service";
       isGlobal: true,
       envFilePath: ".env",
     }),
+    MediaModule,
   ],
   controllers: [AppController, MediaController],
   providers: [AppService, MediaService],
