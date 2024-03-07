@@ -10,6 +10,15 @@ services:
     networks:
       - my_custom_network
 
+  media-service:
+    build: ./media-service
+    env_file:
+      - ./media-service/.env.prod
+    ports:
+      - "3001:3001"
+    networks:
+      - my_custom_network
+
   kafka:
     image: bitnami/kafka:latest
     environment:
