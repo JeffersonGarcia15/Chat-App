@@ -11,12 +11,14 @@ import {
 } from "src/messages/dtos/message.dto";
 
 import { Message, MessageType } from "src/messages/entities/message.entity";
+import { MessagesGateway } from "src/messages/events/messages/messages.gateway";
 import { Between, FindOptionsWhere, Repository } from "typeorm";
 
 @Injectable()
 export class MessagesService {
   constructor(
     @InjectRepository(Message) private messageRepository: Repository<Message>,
+    private messagesGateway: MessagesGateway,
   ) {}
 
   async createMessage(data: CreateMessageDto) {
@@ -81,6 +83,10 @@ export class MessagesService {
       throw new NotFoundException(`Message with Id ${Id} not found`);
     }
     this.messageRepository.merge(dbMessage, data);
-    return await this.messageRepository.save(dbMessage);
+
+    const message = await this.messageRepository.save(dbMessage);
+
+    // Emit the message to the WebSocket server
+    this.messagesGateway.sendFileMessage(message);
   }
 }
