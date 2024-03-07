@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   CreateMessageDto,
@@ -32,7 +32,7 @@ export class MessagesService {
 
     // Validate that a GroupId was sent
     if (!GroupId) {
-      throw new Error("A GroupId must be sent");
+      throw new BadRequestException("A GroupId must be sent");
     }
 
     // Update the where clause with the GroupId
@@ -41,7 +41,7 @@ export class MessagesService {
     // Validate that the Type is a valid MessageType
     if (Type) {
       if (!Object.values(MessageType).includes(Type)) {
-        throw new Error("The message type is not valid");
+        throw new BadRequestException("The message type is not valid");
       } else {
         where.Type = Type;
       }
@@ -49,7 +49,7 @@ export class MessagesService {
 
     if (DeliveredAt) {
       if (new Date(DeliveredAt) > currentDate) {
-        throw new Error("The end date cannot be in the future");
+        throw new BadRequestException("The end date cannot be in the future");
       } else {
         // Update the where clause with the dates, and make it Between the start and end date
         where.DeliveredAt = Between(DeliveredAt, currentDate);

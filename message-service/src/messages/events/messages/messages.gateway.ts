@@ -1,4 +1,10 @@
-import { Inject, Logger } from "@nestjs/common";
+import {
+  Inject,
+  Logger,
+  UseFilters,
+  UsePipes,
+  ValidationPipe,
+} from "@nestjs/common";
 import { ClientKafka } from "@nestjs/microservices";
 import {
   ConnectedSocket,
@@ -8,6 +14,7 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { WsExceptionFilter } from "src/filters/wsException.filter";
 import { JoinChatDto } from "src/messages/dtos/joinChat.dto";
 import {
   CreateMessageDto,
@@ -20,6 +27,8 @@ import { MessagesService } from "src/messages/services/messages/messages.service
     origin: "*",
   },
 })
+@UseFilters(new WsExceptionFilter())
+@UsePipes(new ValidationPipe())
 export class MessagesGateway {
   @WebSocketServer()
   server: Server;
