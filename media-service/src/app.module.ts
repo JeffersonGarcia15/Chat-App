@@ -17,7 +17,7 @@ import { MediaService } from "./services/media/media.service";
             brokers: ["kafka:9092"],
           },
           consumer: {
-            groupId: "notification-service-group",
+            groupId: "media-service-group",
           },
         },
       },
