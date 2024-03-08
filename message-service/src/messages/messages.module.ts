@@ -8,11 +8,13 @@ import { Group } from "./entities/group.entity";
 import { GroupMember } from "./entities/groupMember.entity";
 import { GroupsService } from "./services/groups/groups.service";
 import { MessagesController } from "./controllers/messages/messages.controller";
+import { EventEmitterModule } from "@nestjs/event-emitter";
 
 @Module({
   imports: [
     SharedModule,
     TypeOrmModule.forFeature([Message, Group, GroupMember]),
+    EventEmitterModule.forRoot(),
   ],
   controllers: [MessagesController],
   providers: [MessagesGateway, MessagesService, GroupsService],

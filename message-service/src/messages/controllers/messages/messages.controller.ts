@@ -1,6 +1,5 @@
 import { Controller, Inject, Logger } from "@nestjs/common";
 import { ClientKafka, MessagePattern } from "@nestjs/microservices";
-import { UpdateMessageDto } from "src/messages/dtos/message.dto";
 import { MessagesService } from "src/messages/services/messages/messages.service";
 
 @Controller("messages")
@@ -19,8 +18,12 @@ export class MessagesController {
 
   // This is the event that the Media Service will emit when the File is uploaded and processed
   @MessagePattern("FileProcessed")
-  handleImageProcessed(Id: number, data: UpdateMessageDto) {
+  async handleImageProcessed(data: { Id: number; Content: string }) {
     this.logger.log("FileProcessed event");
-    this.messagesService.update(Id, data);
+
+    const { Id, Content } = data;
+
+    // Update the message with the URL from the Content
+    await this.messagesService.update(Id, { Content });
   }
 }

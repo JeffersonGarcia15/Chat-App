@@ -5,6 +5,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
 import { ClientKafka } from "@nestjs/microservices";
 import {
   ConnectedSocket,
@@ -65,7 +66,11 @@ export class MessagesGateway {
     // Emit the message to the Kafka broker
     this.clientKafka.emit(
       "FileToProcess",
-      JSON.stringify({ Id: savedMessage.Id, File: data.File }),
+      JSON.stringify({
+        Id: savedMessage.Id,
+        File: data.File,
+        FileName: data.FileName,
+      }),
     );
 
     // Emit the message to the WebSocket server. We don't send just data because this one doesn't have an id.
@@ -83,6 +88,7 @@ export class MessagesGateway {
     console.log(`User joined group ${String(groupChat.Id)}`);
   }
 
+  @OnEvent("message.updated")
   async sendFileMessage(message: Message) {
     this.server.to(String(message.GroupId)).emit("message", message);
   }

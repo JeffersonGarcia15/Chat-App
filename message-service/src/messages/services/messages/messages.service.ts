@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   CreateMessageDto,
@@ -11,14 +12,13 @@ import {
 } from "src/messages/dtos/message.dto";
 
 import { Message, MessageType } from "src/messages/entities/message.entity";
-import { MessagesGateway } from "src/messages/events/messages/messages.gateway";
 import { Between, FindOptionsWhere, Repository } from "typeorm";
 
 @Injectable()
 export class MessagesService {
   constructor(
     @InjectRepository(Message) private messageRepository: Repository<Message>,
-    private messagesGateway: MessagesGateway,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async createMessage(data: CreateMessageDto) {
@@ -86,7 +86,7 @@ export class MessagesService {
 
     const message = await this.messageRepository.save(dbMessage);
 
-    // Emit the message to the WebSocket server
-    this.messagesGateway.sendFileMessage(message);
+    // Emit event after updating the message
+    this.eventEmitter.emit("message.updated", message);
   }
 }
