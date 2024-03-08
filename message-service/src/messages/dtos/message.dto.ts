@@ -22,7 +22,7 @@ export class CreateMessageDto {
   SenderId: number;
 
   @IsNumber()
-  @IsPositive()
+  @IsOptional()
   @ApiProperty({ description: "The ID of the receiver" })
   ReceiverId?: number; // Optional, assuming it can be null for group messages
 
@@ -41,12 +41,19 @@ export class CreateMessageDto {
   @ApiProperty({ description: "The type of the message" })
   Type: MessageType;
 
-  @IsString()
   @IsOptional()
   @ApiProperty({
     type: "file",
   })
-  File?: string;
+  File?: string | ArrayBuffer | Buffer;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: "The file name",
+    type: "string",
+  })
+  FileName?: string;
 
   @IsDateString()
   @IsOptional()
