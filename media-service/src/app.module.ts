@@ -36,6 +36,8 @@ import * as Joi from "joi";
         AWS_S3_BUCKET: Joi.string().required(),
         AWS_ACCESS_KEY_ID: Joi.string().required(),
         AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+        UPLOAD_THROTTLE_TTL: Joi.number().default(60000),
+        UPLOAD_THROTTLE_LIMIT: Joi.number().default(5),
       }),
     }),
     MediaModule,
