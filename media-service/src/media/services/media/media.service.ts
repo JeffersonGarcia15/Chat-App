@@ -13,7 +13,9 @@ export class MediaService {
     region: this.configService.region,
   });
 
-  async uploadFile(fileName: string, file: Buffer) {
+  async uploadFile(originalFileName: string, file: Buffer) {
+    // Generating a unique file name. This is avoid overwriting files with the same name
+    const fileName = `${Date.now()}-${originalFileName}`;
     await this.s3Client.send(
       new PutObjectCommand({
         Bucket: this.configService.bucket,
@@ -21,5 +23,9 @@ export class MediaService {
         Body: file,
       }),
     );
+
+    return {
+      url: `https://${this.configService.bucket}.s3.amazonaws.com/${fileName}`,
+    };
   }
 }

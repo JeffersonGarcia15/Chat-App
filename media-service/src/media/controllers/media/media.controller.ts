@@ -17,6 +17,6 @@ export class MediaController {
   async uploadFile(
     @UploadedFile(CustomFileValidationPipe) file: Express.Multer.File,
   ) {
-    await this.mediaService.uploadFile(file.originalname, file.buffer);
+    return await this.mediaService.uploadFile(file.originalname, file.buffer);
   }
 }
