@@ -5,7 +5,7 @@ export class CustomFileValidationPipe implements PipeTransform {
   // Validating the MessageType field from the Message entity
   private readonly allowedMimeTypes = {
     image: ["image/png", "image/jpg", "image/jpeg"],
-    video: ["video/mp4", "video/mpeg", "video/mov"],
+    video: ["video/mp4", "video/mpeg", "video/mov", "video/quicktime"],
     audio: ["audio/mpeg", "audio/mp3"],
     file: ["application/pdf", "application/msword", "application/vnd.ms-excel"],
   };
