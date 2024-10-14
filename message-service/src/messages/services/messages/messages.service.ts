@@ -1,8 +1,14 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   CreateMessageDto,
   FilterMessagesDto,
+  UpdateMessageDto,
 } from "src/messages/dtos/message.dto";
 
 import { Message, MessageType } from "src/messages/entities/message.entity";
@@ -12,11 +18,18 @@ import { Between, FindOptionsWhere, Repository } from "typeorm";
 export class MessagesService {
   constructor(
     @InjectRepository(Message) private messageRepository: Repository<Message>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async createMessage(data: CreateMessageDto) {
     const message = this.messageRepository.create(data);
     return await this.messageRepository.save(message);
+  }
+
+  async findOne(Id: number): Promise<Message> {
+    // This will eventually be expanded to include the user's groups.
+    const message = await this.messageRepository.findOne({ where: { Id } });
+    return message;
   }
 
   async findAll(params: FilterMessagesDto): Promise<Message[]> {
@@ -62,5 +75,18 @@ export class MessagesService {
       take: Limit,
       skip: Offset,
     });
+  }
+
+  async update(Id: number, data: UpdateMessageDto) {
+    const dbMessage = await this.findOne(Id);
+    if (!dbMessage) {
+      throw new NotFoundException(`Message with Id ${Id} not found`);
+    }
+    this.messageRepository.merge(dbMessage, data);
+
+    const message = await this.messageRepository.save(dbMessage);
+
+    // Emit event after updating the message
+    this.eventEmitter.emit("message.updated", message);
   }
 }
